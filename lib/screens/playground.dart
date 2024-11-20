@@ -71,10 +71,6 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
       body: _Playground(
         chains: chains,
         onChanged: (chains) {
-          print(
-            chains.map((e) => e.map((k) => k?.toJson()).toList()).toList(),
-          );
-
           setState(() {
             this.chains = chains;
           });
@@ -99,10 +95,10 @@ class RowBuilder extends StatelessWidget {
         children: [
           Row(
             children: [
-              for (var i = 0; i < row.length; i++)
+              for (var r = 0; r < row.length; r++)
                 Expanded(
                   child: StreamBuilder(
-                    stream: row[i]?.run(),
+                    stream: row[r]?.run(),
                     builder: (context, snapshot) {
                       return SizedBox.expand(
                         child: Stack(
@@ -117,18 +113,27 @@ class RowBuilder extends StatelessWidget {
                               child: Center(
                                 child: IconButton.filled(
                                   onPressed: () async {
-                                    final chain =
-                                        await showChainPicker(context);
+                                    final clone = List<List<Chain?>>.from(
+                                      playground.chains,
+                                    );
+
+                                    final isFirst = index == 0 && r == 0;
+
+                                    final chain = await showChainPicker(
+                                      context,
+                                      onRemoved: isFirst
+                                          ? null
+                                          : () {
+                                              clone[index].removeAt(r);
+                                              playground.onChanged(clone);
+                                            },
+                                    );
 
                                     if (chain == null || !context.mounted) {
                                       return;
                                     }
 
-                                    final clone = List<List<Chain?>>.from(
-                                      playground.chains,
-                                    );
-
-                                    clone[index][i] = chain;
+                                    clone[index][r] = chain;
 
                                     playground.onChanged(clone);
                                   },

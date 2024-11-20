@@ -1,7 +1,6 @@
 import 'package:ambiant/core/core.dart';
 import 'package:ambiant/pods/pods.dart';
 import 'package:ambiant/screens/playground.dart';
-import 'package:ambiant/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marqueer/marqueer.dart';
